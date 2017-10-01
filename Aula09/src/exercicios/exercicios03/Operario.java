@@ -1,0 +1,40 @@
+package exercicios.exercicios03;
+
+public class Operario extends Empregado{
+	private float valorProducao;
+	private float comissao;
+	
+	public Operario(String nome, String endereco, String telefone,
+			int codigoSetor, float salarioBase, float imposto,
+			float valorProducao, float comissao) {
+		super(nome, endereco, telefone, codigoSetor, salarioBase, imposto);
+		this.valorProducao = valorProducao;
+		this.comissao = comissao;
+	}
+
+	public float calcularSalario() {
+		return super.calcularSalario() + (valorProducao * comissao/100);
+	}
+	
+	public float getValorProducao() {
+		return valorProducao;
+	}
+
+	public void setValorProducao(float valorProducao) {
+		this.valorProducao = valorProducao;
+	}
+
+	public float getComissao() {
+		return comissao;
+	}
+
+	public void setComissao(float comissao) {
+		this.comissao = comissao;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "\nOperario [valorProducao=" + valorProducao + ", comissao="
+				+ comissao + "]";
+	}
+}

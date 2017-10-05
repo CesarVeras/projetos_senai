@@ -3,6 +3,7 @@ package spriteSheet;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.security.spec.EncodedKeySpec;
 
 import br.senai.sc.engine.Game;
 import br.senai.sc.engine.Utils;
@@ -12,33 +13,37 @@ public class Principal extends Game {
 	private static final long serialVersionUID = 1L;
 	private Personagem sonic;
 	private boolean wasLeft;
+	private Chao chao;
 
 	@Override
 	public void init() {
 		wasLeft = false;
-		sonic = new Personagem(Utils.getInstance().getWidth() / 2 - 119 / 2,
-				Utils.getInstance().getHeight() / 2 - 111 / 2, 119, 111, 0, 0, "imagem/sonic.png");
-
+		sonic = new Personagem(Utils.getInstance().getWidth() / 2 - 119 / 2, 290, 119, 111, 0, 0, "imagem/sonic.png");
+		chao = new Chao(0, Utils.getInstance().getHeight() / 2, Utils.getInstance().getWidth(), 800, null, 0, 0);
 	}
 
 	@Override
 	public void gameLoop() {
-		desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
-				new Color(69, 125, 160, 255));
-		desenharRetangulo(0, Utils.getInstance().getHeight() / 2 - 111 / 2 + sonic.getHeight() - 18,
-				Utils.getInstance().getWidth(), 800, new Color(150, 209, 83, 255));
-		desenharRetangulo(0, Utils.getInstance().getHeight() / 2 - 111 / 2 + sonic.getHeight() + 10						,
-				Utils.getInstance().getWidth(), 800, new Color(89, 66, 28, 255));
-		getGraphics2D().setColor(new Color(69, 125, 160, 255));
-		getGraphics2D().fillOval(0, (Utils.getInstance().getHeight() / 2 - 111 / 2 + sonic.getHeight() + 50),
-				Utils.getInstance().getWidth(), 800);
+		desenharCenario();
+		chao.draw(getGraphics2D());
 		sonic.draw(getGraphics2D());
 		sonic.update(wasLeft);
+		controlarGravidade();
 	}
 
 	@Override
 	public void aposTermino() {
+	}
 
+	public void controlarGravidade() {
+		if (!sonic.colisao(chao) && !sonic.isJumping()) {
+			sonic.setY(sonic.getY() + 30);
+		}
+	}
+
+	public void desenharCenario() {
+		desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
+				new Color(69, 125, 160, 255));
 	}
 
 	public Principal() {
@@ -61,6 +66,12 @@ public class Principal extends Game {
 			if (e.getKeyCode() == e.VK_RIGHT) {
 				sonic.setRightPressed(true);
 			}
+
+			if (e.getKeyCode() == e.VK_UP) {
+				if (sonic.estaNoChao()) {
+					sonic.setJumping(true);
+				}
+			}
 		}
 
 		@Override
@@ -73,6 +84,10 @@ public class Principal extends Game {
 			if (e.getKeyCode() == e.VK_RIGHT) {
 				sonic.setRightPressed(false);
 				wasLeft = false;
+			}
+
+			if (e.getKeyCode() == e.VK_ESCAPE) {
+				System.exit(0);
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package spriteSheet;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 
 import br.senai.sc.engine.Utils;
 
@@ -16,10 +17,11 @@ public class Personagem {
 	private boolean downPressed;
 	private boolean leftPressed;
 	private boolean rightPressed;
+	private boolean jumping;
 	private Image imagem;
-
-	public Personagem(int x, int y, int width, int height, int frameX,
-			int frameY, String caminho) {
+	private int yBase;
+	
+	public Personagem(int x, int y, int width, int height, int frameX, int frameY, String caminho) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -31,19 +33,10 @@ public class Personagem {
 	}
 
 	public void draw(Graphics2D g) {
-		g.drawImage(
-				imagem, 
-				x, 
-				y, 
-				x + width, 
-				y + height, 
-				frameX * width,
-				frameY * height, 
-				frameX * width + width, 
-				frameY * height + height, 
-				null);
+		g.drawImage(imagem, x, y, x + width, y + height, frameX * width, frameY * height, frameX * width + width,
+				frameY * height + height, null);
 	}
-	
+
 	public void update(boolean wasLeft) {
 		if (leftPressed) {
 			frameY = 2;
@@ -68,6 +61,27 @@ public class Personagem {
 				frameX = 0;
 			}
 		}
+		
+		if (jumping) {
+			if (y > 100) {
+				y -= 20;
+			} else {
+				jumping = false;
+			}
+		}
+	}
+	
+	public boolean estaNoChao() {
+		return yBase == y;
+	}
+	
+	public boolean colisao(Chao c) {
+		Rectangle pHitBox = new Rectangle(x, y, width, height);
+		Rectangle cHitBox = new Rectangle(c.getX(), c.getY(), c.getWidth(), c.getHeight());
+		if (pHitBox.intersects(cHitBox)) {
+			yBase = y;
+		}
+		return pHitBox.intersects(cHitBox);
 	}
 
 	public int getX() {
@@ -156,5 +170,13 @@ public class Personagem {
 
 	public void setRightPressed(boolean rightPressed) {
 		this.rightPressed = rightPressed;
+	}
+
+	public boolean isJumping() {
+		return jumping;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
 	}
 }

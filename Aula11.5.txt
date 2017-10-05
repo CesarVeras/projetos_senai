@@ -1,0 +1,3 @@
+﻿Na aula do dia 04/10/2017 foi continuado a atividade do sonic. 
++ Adicionada função de pular ao sonic.
++ Introduzida noção de gravidade ao sonic.

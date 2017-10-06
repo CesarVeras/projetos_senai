@@ -3,7 +3,6 @@ package spriteSheet;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.security.spec.EncodedKeySpec;
 
 import br.senai.sc.engine.Game;
 import br.senai.sc.engine.Utils;

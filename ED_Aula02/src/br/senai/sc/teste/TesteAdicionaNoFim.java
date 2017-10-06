@@ -9,6 +9,7 @@ public class TesteAdicionaNoFim {
 		Vetor lista = new Vetor();
 		lista.adiciona(a1);
 		lista.adiciona(a2);
+		lista.adiciona(new Aluno("Pedro"));
 		System.out.println(lista);
 	}
 }

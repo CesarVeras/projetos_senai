@@ -40,7 +40,6 @@ public class Chao extends ElementoEstatico {
 	@Override
 	public void update() {
 		if (isSpriteSheet() && getImagem() != null) {
-			// TODO definir ordem das imagens em seus frames.
 		}
 	}
 }

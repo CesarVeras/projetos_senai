@@ -1,5 +1,6 @@
 package jogo;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 
 public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
@@ -16,6 +17,12 @@ public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
 		this.frameY = frameY;
 		this.colunas = colunas;
 		this.linhas = linhas;
+	}
+	
+	@Override
+	public void draw(Graphics2D g) {
+		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX()+getWidth(), getPosY()+getHeight(),
+				getFrameX()*getWidth(), getFrameY()*getHeight(), getFrameX()*getWidth()+getWidth(), getFrameY()*getHeight()+getHeight(), null);
 	}
 
 	public int getFrameX() {
@@ -49,4 +56,5 @@ public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
 	public void setLinhas(int linhas) {
 		this.linhas = linhas;
 	}
+	
 }

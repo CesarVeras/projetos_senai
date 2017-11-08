@@ -22,6 +22,9 @@ public class Principal extends Game {
 	private TelaEstatica ranking;
 	private TelaEstatica opcoes;
 	private TelaEstatica pausa;
+	private Fundo fundo;
+	private Personagem sonic;
+	private Atirador atirador;
 
 	public Principal() {
 		addMouseListener(new ControleMouse());
@@ -81,6 +84,9 @@ public class Principal extends Game {
 						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 + 5,
 								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
 				false);
+		fundo = new Fundo(-1500, 0, 3123, 1757, Utils.getInstance().loadImage("imagens/fundo.jpg"), 10, 0);
+		sonic = new Personagem();
+		atirador = new Atirador();
 	}
 
 	@Override
@@ -105,7 +111,12 @@ public class Principal extends Game {
 			}
 		} else if (emJogo) {
 			desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.WHITE);
-			desenharString("Aqui vai o gameplay", 400, 400, Color.BLACK, 60);
+			fundo.update();
+			fundo.draw(getGraphics2D());
+			sonic.update();
+			sonic.draw(getGraphics2D());
+			atirador.update();
+			atirador.draw(getGraphics2D());
 		} else if (pausa.isVisivel()) {
 			pausa.draw(getGraphics2D());
 		}
@@ -119,6 +130,15 @@ public class Principal extends Game {
 	public class ControleKey extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == e.VK_X) {
+				menu.setVisivel(false);
+				historia.setVisivel(false);
+				creditos.setVisivel(false);
+				ranking.setVisivel(false);
+				opcoes.setVisivel(false);
+				emJogo = true;
+				pausa.setVisivel(false);
+			}
 			if (e.getKeyCode() == e.VK_ESCAPE) {
 				if (menu.isVisivel()) {
 					System.exit(0);
@@ -133,6 +153,39 @@ public class Principal extends Game {
 					opcoes.setVisivel(false);
 					emJogo = false;
 					pausa.setVisivel(false);
+				}
+			}
+			if (emJogo) {
+				if(e.getKeyCode() == e.VK_LEFT) {
+					sonic.setMovendo(-1);
+					if (sonic.isColidindoComCaixaEsquerda()) {
+						fundo.setMovendo(1);
+					}
+				} else if (e.getKeyCode() == e.VK_RIGHT) {
+					sonic.setMovendo(1);
+					if (sonic.isColidindoComCaixaDireita()) {
+						fundo.setMovendo(-1);
+					}
+				}
+				
+				if (e.getKeyCode() == KeyEvent.VK_D) {
+					atirador.setMoving(1);
+				} else if (e.getKeyCode() == KeyEvent.VK_A) {
+					atirador.setMoving(-1);
+				}
+			}
+		}
+		
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (emJogo) {
+				if(e.getKeyCode() == e.VK_LEFT || e.getKeyCode() == e.VK_RIGHT) {
+					sonic.setMovendo(0);
+					fundo.setMovendo(0);
+				}
+				
+				if (e.getKeyCode() == e.VK_A || e.getKeyCode() == e.VK_D) {
+					atirador.setMoving(0);
 				}
 			}
 		}

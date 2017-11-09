@@ -25,6 +25,7 @@ public class Principal extends Game {
 	private Fundo fundo;
 	private Personagem sonic;
 	private Atirador atirador;
+	private Chao chao;
 
 	public Principal() {
 		addMouseListener(new ControleMouse());
@@ -87,6 +88,7 @@ public class Principal extends Game {
 		fundo = new Fundo(-1500, 0, 3123, 1757, Utils.getInstance().loadImage("imagens/fundo.jpg"), 10, 0);
 		sonic = new Personagem();
 		atirador = new Atirador();
+		chao = new Chao(0, 696, Utils.getInstance().getWidth(), 100, null);
 	}
 
 	@Override
@@ -113,6 +115,7 @@ public class Principal extends Game {
 			desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.WHITE);
 			fundo.update();
 			fundo.draw(getGraphics2D());
+			chao.draw(getGraphics2D());
 			sonic.update();
 			sonic.draw(getGraphics2D());
 			atirador.update();
@@ -186,6 +189,10 @@ public class Principal extends Game {
 				
 				if (e.getKeyCode() == e.VK_A || e.getKeyCode() == e.VK_D) {
 					atirador.setMoving(0);
+				}
+				
+				if (e.getKeyCode() == e.VK_SPACE) {
+					atirador.atirar();
 				}
 			}
 		}

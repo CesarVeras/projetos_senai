@@ -1,5 +1,7 @@
 package jogo;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 
 public class Chao extends ObjetoGrafico{
@@ -8,4 +10,14 @@ public class Chao extends ObjetoGrafico{
 		super(posX, posY, width, height, sprite);
 	}
 	
+	@Override
+	public void draw(Graphics2D g) {
+		if (getSprite() != null) {
+			super.draw(g);
+		} else {
+			g.setColor(Color.green);
+			g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());
+		}
+		
+	}
 }

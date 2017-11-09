@@ -3,6 +3,7 @@ package br.senai.sc.LinkedList;
 public class Celula {
 	private Object elemento;
 	private Celula proximoElemento;
+	private Celula anterior;
 	
 	public Celula(Object elemento, Celula proximoElemento) {
 		this.elemento = elemento;
@@ -25,5 +26,17 @@ public class Celula {
 	
 	public String toString() {
 		return elemento.toString();
+	}
+
+	public Celula getAnterior() {
+		return anterior;
+	}
+
+	public void setAnterior(Celula anterior) {
+		this.anterior = anterior;
+	}
+
+	public void setElemento(Object elemento) {
+		this.elemento = elemento;
 	}
 }

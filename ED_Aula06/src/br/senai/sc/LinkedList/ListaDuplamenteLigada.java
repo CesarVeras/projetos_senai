@@ -1,16 +1,19 @@
 package br.senai.sc.LinkedList;
 
-public class ListaLigada {
+public class ListaDuplamenteLigada {
 	private Celula primeira;
 	private Celula ultima;
 	private int totalDeElementos;
 
-	public ListaLigada() {
+	public ListaDuplamenteLigada() {
 		totalDeElementos = 0;
 	}
 
 	public void adicionaNoComeco(Object elemento) {
 		Celula nova = new Celula(elemento, primeira);
+		if(totalDeElementos > 0) {
+			primeira.setAnterior(nova);
+		}
 		primeira = nova;
 		if (totalDeElementos == 0) {
 			ultima = primeira;
@@ -23,6 +26,7 @@ public class ListaLigada {
 			adicionaNoComeco(elemento);
 		} else {
 			Celula nova = new Celula(elemento);
+			nova.setAnterior(ultima);
 			ultima.setProximoElemento(nova);
 			ultima = nova;
 			totalDeElementos++;
@@ -35,7 +39,7 @@ public class ListaLigada {
 		} else if (posicao == totalDeElementos) {
 			adicionaNoFim(elemento);
 		} else {
-			Celula anterior = pegaCelula(posicao - 1);
+			Celula anterior = ultima.getAnterior();
 			Celula nova = new Celula(elemento, anterior.getProximoElemento());
 			anterior.setProximoElemento(nova);
 			totalDeElementos++;
@@ -49,6 +53,9 @@ public class ListaLigada {
 	public void removeDoComeco() {
 		if (!posicaoOcupada(0)) {
 			throw new IllegalArgumentException("Posição não existe");
+		}
+		if (totalDeElementos > 1) {
+			primeira.getProximoElemento().setAnterior(null);
 		}
 		primeira = primeira.getProximoElemento();
 		totalDeElementos--;
@@ -82,7 +89,7 @@ public class ListaLigada {
 		if (totalDeElementos == 1) {
 			removeDoComeco();
 		} else {
-			Celula penultima = pegaCelula(totalDeElementos - 2); 
+			Celula penultima = ultima.getAnterior(); 
 			penultima.setProximoElemento(null);
 			this.ultima = penultima;
 			this.totalDeElementos--;
@@ -118,6 +125,10 @@ public class ListaLigada {
 			atual = atual.getProximoElemento();
 		}
 		return atual;
+	}
+	
+	public Celula pegarCelula(int posicao) {
+		return pegaCelula(posicao);
 	}
 
 	private boolean posicaoOcupada(int posicao) {

@@ -19,7 +19,7 @@ public class Personagem extends ObjetoGraficoMovelaAnimado{
 	public void update() {
 		if (movendo != 0) {
 			setFrameX(getFrameX() + 1);
-			if (getFrameX() > getColunas()) {
+			if (getFrameX() == getColunas()) {
 				setFrameX(0);
 			}
 		}

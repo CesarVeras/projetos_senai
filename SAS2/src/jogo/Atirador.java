@@ -2,36 +2,25 @@ package jogo;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.Random;
 
 import br.senai.sc.engine.Utils;
 
 public class Atirador extends Inimigo {
-
-	private boolean comecou;
-	private boolean comecou2;
-	private boolean andando;
-	private int andandoInt;
-	private boolean parou;
+	private boolean atirando;
+	private int contadorAtirar;
+	private int contadorAbaixar;
+	private boolean baixarArma;
+	private int viradoPara;
 
 	public Atirador() {
-		super(Utils.getInstance().getWidth() / 2 + 100, 600, 59, 85,
+		super(Utils.getInstance().getWidth() / 2 + 100, 610, 59, 85,
 				Utils.getInstance().loadImage("imagens/soldado_novo.png"), 5, 0, 1, 0, 2, 3);
-		comecou = false;
-		comecou2 = false;
-		andando = false;
-		andandoInt = 0;
-
 	}
 
 	public Atirador(int posX, int posY, int width, int height, Image sprite, int velX, int velY, int frameX,
 			int frameY) {
 		super(posX, posY, width, height, Utils.getInstance().loadImage("imagens/soldado.png"), velX, velY, frameX,
 				frameY, 3, 2);
-		comecou = false;
-		comecou2 = false;
-		andando = false;
-		andandoInt = 0;
 	}
 
 	@Override
@@ -44,19 +33,16 @@ public class Atirador extends Inimigo {
 			setFrameY(1);
 			setPosX(getPosX() + getVelX());
 			setFrameX(getFrameX() + 1);
-		}
-		if (getFrameX() > getColunas()) {
+		} 
+		if (getFrameX() == getColunas()) {
 			setFrameX(0);
 		}
-		// if (!andando && !comecou) {
-		// andando();
-		// }
-		//
-		// if (!comecou) {
-		// atirando();
-		// } else if (!comecou2) {
-		// atirando2();
-		// }
+		if (atirando) {
+			atirar();
+		} 
+		if (baixarArma) {
+			baixarArma();
+		}
 	}
 
 	@Override
@@ -65,6 +51,52 @@ public class Atirador extends Inimigo {
 				getFrameX() * getWidth(), getFrameY() * getHeight(), getFrameX() * getWidth() + getWidth(),
 				getFrameY() * getHeight() + getHeight(), null);
 	}
+	
+	public void atirar() {
+		if (!atirando) {
+			if (viradoPara == -1) {
+				// definindo animação 1/2 de atirar para esquerda
+				setFrameY(2);
+				setFrameX(0);
+			} else {
+				// definindo animação 1/2 de atirar para direita
+				setFrameY(1);
+				setFrameX(0);
+			}
+			atirando = true;
+			contadorAtirar = 0;
+		} else if (contadorAtirar == 15){
+			atirando = false;
+			if (viradoPara == -1) {
+				// definindo animação 2/2 de atirar para esquerda
+				setFrameY(2);
+				setFrameX(1);
+			} else {
+				// definindo animação 2/2 de atirar para direita
+				setFrameY(1);
+				setFrameX(1);
+			}
+			atirando = false;
+			contadorAtirar = 0;
+			contadorAbaixar = 0;
+			baixarArma = true;
+		} else {
+			contadorAtirar++;
+		}
+	}
+	
+	private void baixarArma() {
+		contadorAbaixar++;
+		if (contadorAbaixar == 30) {
+			if (viradoPara == -1) {
+				setFrameY(0);
+				setFrameX(1);
+			} else {
+				setFrameY(0);
+				setFrameX(0);
+			}
+		}
+	}
 
 	@Override
 	public void setMoving(int moving) {
@@ -72,8 +104,10 @@ public class Atirador extends Inimigo {
 			if (moving == 0) {
 				setFrameY(0);
 				if (getMoving() == 1) {
+					viradoPara = 1;
 					setFrameX(0);
 				} else {
+					viradoPara = -1;
 					setFrameX(1);
 				}
 			} else if (moving == 1) {
@@ -92,90 +126,5 @@ public class Atirador extends Inimigo {
 		// super.setMoving(moving);
 		// setFrameY(moving);
 		// }
-	}
-
-	private void atirando() {
-		Random aleatorio = new Random();
-		int n = aleatorio.nextInt(101);
-		if (n < 2) {
-			comecou = true;
-			setFrameX(0);
-			setFrameY(2);
-			n = aleatorio.nextInt(101);
-			// comecou2 = true;
-		}
-	}
-
-	private void atirando2() {
-		Random aleatorio = new Random();
-		int n = aleatorio.nextInt(101);
-		if (n < 10) {
-			comecou2 = true;
-			setFrameX(1);
-			setFrameY(2);
-		}
-	}
-
-	private void andando() {
-		if (!parou) {
-			andandoInt += 3;
-			setFrameX(0);
-			setFrameY(0);
-			setPosX(getPosX() + 3);
-			if (andandoInt >= 110) {
-				// andando = true;
-				parou = true;
-			}
-		} else if (parou) {
-			// System.out.println(andandoInt);
-			andandoInt -= 3;
-			setPosX(getPosX() - 3);
-			setFrameX(1);
-			setFrameY(0);
-			if (andandoInt <= 0) {
-				andando = false;
-				parou = false;
-			}
-		}
-	}
-
-	public boolean isComecou() {
-		return comecou;
-	}
-
-	public void setComecou(boolean comecou) {
-		this.comecou = comecou;
-	}
-
-	public boolean isComecou2() {
-		return comecou2;
-	}
-
-	public void setComecou2(boolean comecou2) {
-		this.comecou2 = comecou2;
-	}
-
-	public boolean isAndando() {
-		return andando;
-	}
-
-	public void setAndando(boolean andando) {
-		this.andando = andando;
-	}
-
-	public int getAndandoInt() {
-		return andandoInt;
-	}
-
-	public void setAndandoInt(int andandoInt) {
-		this.andandoInt = andandoInt;
-	}
-
-	public boolean isParou() {
-		return parou;
-	}
-
-	public void setParou(boolean parou) {
-		this.parou = parou;
 	}
 }

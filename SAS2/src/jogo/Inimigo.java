@@ -2,7 +2,7 @@ package jogo;
 
 import java.awt.Image;
 
-public abstract class Inimigo extends ObjetoGraficoMovelaAnimado {
+public abstract class Inimigo extends ObjetoGraficoMovelAnimado {
 
 	private int vidas;
 	private int moving;

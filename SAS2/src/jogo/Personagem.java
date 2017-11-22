@@ -5,14 +5,17 @@ import java.awt.Image;
 
 import br.senai.sc.engine.Utils;
 
-public class Personagem extends ObjetoGraficoMovelaAnimado{
+public class Personagem extends ObjetoGraficoMovelAnimado{
 	private int vidas;
 	private boolean gravidade;
 	private int movendo; 
 	private boolean pulando;
+	private boolean wasLeft;
+	private boolean dandoSoco;
+//	private int contadorSoco;
 	
 	public Personagem() {
-		super(Utils.getInstance().getWidth()/2, 600, 119, 112, Utils.getInstance().loadImage("imagens/sonic.png"), 10, 0, 0, 0, 8, 3);
+		super(Utils.getInstance().getWidth()/2, 520, 167, 180, Utils.getInstance().loadImage("imagens/personagem.png"), 10, 0, 0, 0, 4, 5);
 	}
 
 	@Override
@@ -31,6 +34,28 @@ public class Personagem extends ObjetoGraficoMovelaAnimado{
 			if (!isColidindoComCaixaEsquerda()) {
 				setPosX(getPosX() + getVelX());
 			}
+		}
+		if (dandoSoco) {
+			darSoco();
+		}
+	}
+	
+	public void darSoco() {
+		if(!dandoSoco) {
+			dandoSoco = true;
+			setFrameX(0);
+			if(wasLeft) {
+				setFrameY(1);
+			} else {
+				setFrameY(2);
+			}
+		} else {
+			setFrameX(1);
+			dandoSoco = false;
+//			contadorSoco++;
+//			if (contadorSoco == 2) {
+//				contadorSoco = 0;
+//			}
 		}
 	}
 	
@@ -51,14 +76,16 @@ public class Personagem extends ObjetoGraficoMovelaAnimado{
 				setFrameY(0);
 				if (this.movendo == 1) {
 					setFrameX(0);
+					wasLeft = true;
 				} else {
 					setFrameX(1);
+					wasLeft = false;
 				}
 			} else if (movendo == 1) {
-				setFrameY(1);
+				setFrameY(3);
 				setVelX(Math.abs(getVelX()));
 			} else {
-				setFrameY(2);
+				setFrameY(4);
 				setVelX(Math.abs(getVelX())*-1);
 			}
 			this.movendo = movendo;

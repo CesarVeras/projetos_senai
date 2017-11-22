@@ -23,7 +23,7 @@ public class Principal extends Game {
 	private TelaEstatica opcoes;
 	private TelaEstatica pausa;
 	private Fundo fundo;
-	private Personagem sonic;
+	private Personagem trump;
 	private Atirador atirador;
 	private Chao chao;
 
@@ -86,7 +86,7 @@ public class Principal extends Game {
 								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
 				false);
 		fundo = new Fundo(-1500, 0, 3123, 1757, Utils.getInstance().loadImage("imagens/fundo.jpg"), 10, 0);
-		sonic = new Personagem();
+		trump = new Personagem();
 		atirador = new Atirador();
 		chao = new Chao(0, 696, Utils.getInstance().getWidth(), 100, null);
 	}
@@ -116,8 +116,8 @@ public class Principal extends Game {
 			fundo.update();
 			fundo.draw(getGraphics2D());
 			chao.draw(getGraphics2D());
-			sonic.update();
-			sonic.draw(getGraphics2D());
+			trump.update();
+			trump.draw(getGraphics2D());
 			atirador.update();
 			atirador.draw(getGraphics2D());
 		} else if (pausa.isVisivel()) {
@@ -160,15 +160,19 @@ public class Principal extends Game {
 			}
 			if (emJogo) {
 				if(e.getKeyCode() == e.VK_LEFT) {
-					sonic.setMovendo(-1);
-					if (sonic.isColidindoComCaixaEsquerda()) {
+					trump.setMovendo(-1);
+					if (trump.isColidindoComCaixaEsquerda()) {
 						fundo.setMovendo(1);
 					}
 				} else if (e.getKeyCode() == e.VK_RIGHT) {
-					sonic.setMovendo(1);
-					if (sonic.isColidindoComCaixaDireita()) {
+					trump.setMovendo(1);
+					if (trump.isColidindoComCaixaDireita()) {
 						fundo.setMovendo(-1);
 					}
+				}
+				
+				if(e.getKeyCode() == e.VK_Z) {
+					trump.darSoco();
 				}
 				
 				if (e.getKeyCode() == KeyEvent.VK_D) {
@@ -183,7 +187,7 @@ public class Principal extends Game {
 		public void keyReleased(KeyEvent e) {
 			if (emJogo) {
 				if(e.getKeyCode() == e.VK_LEFT || e.getKeyCode() == e.VK_RIGHT) {
-					sonic.setMovendo(0);
+					trump.setMovendo(0);
 					fundo.setMovendo(0);
 				}
 				

@@ -3,14 +3,14 @@ package jogo;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
+public abstract class ObjetoGraficoMovelAnimado extends ObjetoGraficoMovel {
 
 	private int frameX;
 	private int frameY;
 	private int colunas;
 	private int linhas;
 
-	public ObjetoGraficoMovelaAnimado(int posX, int posY, int width, int height, Image sprite, int velX, int velY,
+	public ObjetoGraficoMovelAnimado(int posX, int posY, int width, int height, Image sprite, int velX, int velY,
 			int frameX, int frameY, int colunas, int linhas) {
 		super(posX, posY, width, height, sprite, velX, velY);
 		this.frameX = frameX;
@@ -18,11 +18,12 @@ public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
 		this.colunas = colunas;
 		this.linhas = linhas;
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX()+getWidth(), getPosY()+getHeight(),
-				getFrameX()*getWidth(), getFrameY()*getHeight(), getFrameX()*getWidth()+getWidth(), getFrameY()*getHeight()+getHeight(), null);
+		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX() + getWidth(), getPosY() + getHeight(),
+				getFrameX() * getWidth(), getFrameY() * getHeight(), getFrameX() * getWidth() + getWidth(),
+				getFrameY() * getHeight() + getHeight(), null);
 	}
 
 	public int getFrameX() {
@@ -56,5 +57,5 @@ public abstract class ObjetoGraficoMovelaAnimado extends ObjetoGraficoMovel{
 	public void setLinhas(int linhas) {
 		this.linhas = linhas;
 	}
-	
+
 }

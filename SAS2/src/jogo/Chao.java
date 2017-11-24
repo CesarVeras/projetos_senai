@@ -5,19 +5,16 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 
 public class Chao extends ObjetoGrafico{
-
-	public Chao(int posX, int posY, int width, int height, Image sprite) {
-		super(posX, posY, width, height, sprite);
-	}
 	
+	public Chao(int posX, int posY, int width, int height,
+			Image sprite) {
+		super(posX, posY, width, height, 0, 0, sprite);
+	}
+
 	@Override
 	public void draw(Graphics2D g) {
-		if (getSprite() != null) {
-			super.draw(g);
-		} else {
-			g.setColor(Color.green);
-			g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());
-		}
+		g.setColor(Color.green);
+		g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());
 		
 	}
 }

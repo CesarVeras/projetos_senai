@@ -85,10 +85,10 @@ public class Principal extends Game {
 						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 + 5,
 								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
 				false);
-		fundo = new Fundo(-1500, 0, 3123, 1757, Utils.getInstance().loadImage("imagens/fundo.jpg"), 10, 0);
+		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Utils.getInstance().loadImage("imagens/cenario.png"), 10, 0);
 		trump = new Personagem();
 		atirador = new Atirador();
-		chao = new Chao(0, 696, Utils.getInstance().getWidth(), 100, null);
+		chao = new Chao(0, 790, Utils.getInstance().getWidth(), 100, null);
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class Principal extends Game {
 			desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.WHITE);
 			fundo.update();
 			fundo.draw(getGraphics2D());
-			chao.draw(getGraphics2D());
+//			chao.draw(getGraphics2D());
 			trump.update();
 			trump.draw(getGraphics2D());
 			atirador.update();
@@ -128,6 +128,11 @@ public class Principal extends Game {
 	@Override
 	public void aposTermino() {
 
+	}
+	
+	public void moverTudo(int direcao) {
+		fundo.setMovendo(direcao);
+		atirador.setMoving(direcao);
 	}
 
 	public class ControleKey extends KeyAdapter {
@@ -160,14 +165,16 @@ public class Principal extends Game {
 			}
 			if (emJogo) {
 				if(e.getKeyCode() == e.VK_LEFT) {
-					trump.setMovendo(-1);
+					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
+					trump.setIndoPraEsquerda(true);
 					if (trump.isColidindoComCaixaEsquerda()) {
-						fundo.setMovendo(1);
+						moverTudo(1);
 					}
 				} else if (e.getKeyCode() == e.VK_RIGHT) {
-					trump.setMovendo(1);
+					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
+					trump.setIndoPraDireita(true);
 					if (trump.isColidindoComCaixaDireita()) {
-						fundo.setMovendo(-1);
+						moverTudo(-1);
 					}
 				}
 				
@@ -186,9 +193,14 @@ public class Principal extends Game {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			if (emJogo) {
-				if(e.getKeyCode() == e.VK_LEFT || e.getKeyCode() == e.VK_RIGHT) {
-					trump.setMovendo(0);
-					fundo.setMovendo(0);
+				if(e.getKeyCode() == e.VK_LEFT) {
+					trump.setIndoPraEsquerda(false);
+					moverTudo(0);
+				} 
+				
+				if(e.getKeyCode() == e.VK_RIGHT) {
+					trump.setIndoPraDireita(false);
+					moverTudo(0);
 				}
 				
 				if (e.getKeyCode() == e.VK_A || e.getKeyCode() == e.VK_D) {

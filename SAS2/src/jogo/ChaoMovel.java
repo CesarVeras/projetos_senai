@@ -3,12 +3,15 @@ package jogo;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-public class ChaoMovel extends ObjetoGraficoMovel{
+public class ChaoMovel extends Chao{
 	
 	private int movendo;
-	
-	public ChaoMovel(int posX, int posY, int width, int height, Image sprite, int velX, int velY) {
-		super(posX, posY, width, height, sprite, velX, velY);
+
+	public ChaoMovel(int posX, int posY, int width, int height, int velX,
+			int velY, Image sprite) {
+		super(posX, posY, width, height, sprite);
+		setVelX(velX);
+		setVelY(velY);
 	}
 
 	@Override

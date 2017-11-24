@@ -2,14 +2,13 @@ package jogo;
 
 import java.awt.Image;
 
-public abstract class Inimigo extends ObjetoGraficoMovelAnimado {
-
-	private int vidas;
+public abstract class Inimigo extends ObjetoVivo{
 	private int moving;
 
-	public Inimigo(int posX, int posY, int width, int height, Image sprite, int velX, int velY, int frameX, int frameY,
-			int colunas, int linhas) {
-		super(posX, posY, width, height, sprite, velX, velY, frameX, frameY, colunas, linhas);
+	public Inimigo(int posX, int posY, int width, int height, int velX,
+			int velY, Image sprite, int colunas,
+			int linhas, int vidas) {
+		super(posX, posY, width, height, velX, velY, sprite, colunas, linhas, vidas);
 	}
 
 	public void setMoving(int moving) {
@@ -18,13 +17,5 @@ public abstract class Inimigo extends ObjetoGraficoMovelAnimado {
 
 	public int getMoving() {
 		return moving;
-	}
-
-	public int getVidas() {
-		return vidas;
-	}
-
-	public void setVidas(int vidas) {
-		this.vidas = vidas;
 	}
 }

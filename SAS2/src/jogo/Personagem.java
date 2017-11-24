@@ -1,37 +1,40 @@
 package jogo;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-
 import br.senai.sc.engine.Utils;
 
-public class Personagem extends ObjetoGraficoMovelAnimado{
-	private int vidas;
-	private boolean gravidade;
-	private int movendo; 
+public class Personagem extends ObjetoVivo {
+	private boolean gravidade; // TODO precisa implementar gravidade para pulo
 	private boolean pulando;
-	private boolean wasLeft;
+	private boolean eraEsquerda;
 	private boolean dandoSoco;
-//	private int contadorSoco;
-	
+	private boolean indoPraEsquerda;
+	private boolean indoPraDireita;
+	private boolean podeAndar;
+
+	// private int contadorSoco;
+
 	public Personagem() {
-		super(Utils.getInstance().getWidth()/2, 520, 167, 180, Utils.getInstance().loadImage("imagens/personagem.png"), 10, 0, 0, 0, 4, 5);
+		super(Utils.getInstance().getWidth() / 2, 615, 167, 180, 10, 10, Utils
+				.getInstance().loadImage("imagens/personagem.png"), 4, 5, 5);
+
 	}
 
 	@Override
 	public void update() {
-		if (movendo != 0) {
+		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 2) {
 			setFrameX(getFrameX() + 1);
 			if (getFrameX() == getColunas()) {
 				setFrameX(0);
 			}
 		}
-		if (movendo == 1) {
-			if (!isColidindoComCaixaDireita()) {
-				setPosX(getPosX() + getVelX()); 
+		if (indoPraDireita) {
+			if ((!isColidindoComCaixaDireita() || podeAndar)
+					&& (getPosX() + getWidth() < Utils.getInstance().getWidth())) {
+				setPosX(getPosX() + getVelX());
 			}
-		} else if (movendo == -1) {
-			if (!isColidindoComCaixaEsquerda()) {
+		} else if (indoPraEsquerda) {
+			if ((!isColidindoComCaixaEsquerda() || podeAndar)
+					&& (getPosX() > 0)) {
 				setPosX(getPosX() + getVelX());
 			}
 		}
@@ -39,77 +42,77 @@ public class Personagem extends ObjetoGraficoMovelAnimado{
 			darSoco();
 		}
 	}
-	
+
 	public void darSoco() {
-		if(!dandoSoco) {
+		if (!dandoSoco) {
 			dandoSoco = true;
 			setFrameX(0);
-			if(wasLeft) {
-				setFrameY(1);
-			} else {
+			if (eraEsquerda) {
 				setFrameY(2);
+			} else {
+				setFrameY(1);
 			}
 		} else {
 			setFrameX(1);
 			dandoSoco = false;
-//			contadorSoco++;
-//			if (contadorSoco == 2) {
-//				contadorSoco = 0;
-//			}
+			// contadorSoco++;
+			// if (contadorSoco == 2) {
+			// contadorSoco = 0;
+			// }
 		}
 	}
-	
+
 	public boolean isColidindoComCaixaDireita() {
 		return (getPosX() + getWidth() >= 3 * (Utils.getInstance().getWidth() / 4));
 	}
+
 	public boolean isColidindoComCaixaEsquerda() {
 		return (getPosX() <= Utils.getInstance().getWidth() / 4);
 	}
-	
+
 	public boolean isColidindoComCaixa() {
-		return (getPosX() + getWidth() >= 3 * (Utils.getInstance().getWidth() /4)) || (getPosX() <= Utils.getInstance().getWidth()/4);
+		return isColidindoComCaixaDireita() || isColidindoComCaixaEsquerda();
 	}
 
-	public void setMovendo(int movendo) {
-		if (movendo != this.movendo) {
-			if (movendo == 0) {
+	public boolean colidindoComChao(Chao chao) {
+		// TODO realizar verificação com qualquer tipo de chão
+		return false;
+	}
+
+	public boolean isIndoPraEsquerda() {
+		return indoPraEsquerda;
+	}
+
+	public void setIndoPraEsquerda(boolean indoPraEsquerda) {
+		if (indoPraEsquerda != this.indoPraEsquerda) {
+			if (!indoPraEsquerda) {
 				setFrameY(0);
-				if (this.movendo == 1) {
-					setFrameX(0);
-					wasLeft = true;
-				} else {
-					setFrameX(1);
-					wasLeft = false;
-				}
-			} else if (movendo == 1) {
-				setFrameY(3);
-				setVelX(Math.abs(getVelX()));
+				setFrameX(1);
+				eraEsquerda = true;
 			} else {
 				setFrameY(4);
-				setVelX(Math.abs(getVelX())*-1);
+				setVelX(Math.abs(getVelX()) * -1);
 			}
-			this.movendo = movendo;
+			this.indoPraEsquerda = indoPraEsquerda;
 		}
 	}
-	
-	public int getMovendo() {
-		return movendo;
+
+	public boolean isIndoPraDireita() {
+		return indoPraDireita;
 	}
 
-	public int getVidas() {
-		return vidas;
-	}
-
-	public void setVidas(int vidas) {
-		this.vidas = vidas;
-	}
-
-	public boolean isGravidade() {
-		return gravidade;
-	}
-
-	public void setGravidade(boolean gravidade) {
-		this.gravidade = gravidade;
+	public void setIndoPraDireita(boolean indoPraDireita) {
+		if (indoPraDireita != this.indoPraDireita) {
+			if (!indoPraDireita) {
+				setFrameY(0);
+				setFrameX(0);
+				eraEsquerda = false;
+			} else {
+				setFrameY(3);
+				setVelX(Math.abs(getVelX()));
+			}
+			this.indoPraDireita = indoPraDireita;
+		}
 	}
 
 	public boolean isPulando() {
@@ -118,5 +121,21 @@ public class Personagem extends ObjetoGraficoMovelAnimado{
 
 	public void setPulando(boolean pulando) {
 		this.pulando = pulando;
+	}
+
+	public boolean isEraEsquerda() {
+		return eraEsquerda;
+	}
+
+	public void setEraEsquerda(boolean eraEsquerda) {
+		this.eraEsquerda = eraEsquerda;
+	}
+
+	public boolean isPodeAndar() {
+		return podeAndar;
+	}
+
+	public void setPodeAndar(boolean podeAndar) {
+		this.podeAndar = podeAndar;
 	}
 }

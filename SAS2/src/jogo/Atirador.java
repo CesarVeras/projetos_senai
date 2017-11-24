@@ -13,14 +13,9 @@ public class Atirador extends Inimigo {
 	private int viradoPara;
 
 	public Atirador() {
-		super(Utils.getInstance().getWidth() / 2 + 100, 610, 59, 85,
-				Utils.getInstance().loadImage("imagens/soldado_novo.png"), 5, 0, 1, 0, 2, 3);
-	}
-
-	public Atirador(int posX, int posY, int width, int height, Image sprite, int velX, int velY, int frameX,
-			int frameY) {
-		super(posX, posY, width, height, Utils.getInstance().loadImage("imagens/soldado.png"), velX, velY, frameX,
-				frameY, 3, 2);
+		super(Utils.getInstance().getWidth() / 2 + 100, 705, 59, 85, 5, 5,
+				Utils.getInstance().loadImage("imagens/soldado_novo.png"), 2,
+				3, 2);
 	}
 
 	@Override
@@ -33,25 +28,18 @@ public class Atirador extends Inimigo {
 			setFrameY(1);
 			setPosX(getPosX() + getVelX());
 			setFrameX(getFrameX() + 1);
-		} 
+		}
 		if (getFrameX() == getColunas()) {
 			setFrameX(0);
 		}
 		if (atirando) {
 			atirar();
-		} 
+		}
 		if (baixarArma) {
 			baixarArma();
 		}
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
-		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX() + getWidth(), getPosY() + getHeight(),
-				getFrameX() * getWidth(), getFrameY() * getHeight(), getFrameX() * getWidth() + getWidth(),
-				getFrameY() * getHeight() + getHeight(), null);
-	}
-	
 	public void atirar() {
 		if (!atirando) {
 			if (viradoPara == -1) {
@@ -65,7 +53,7 @@ public class Atirador extends Inimigo {
 			}
 			atirando = true;
 			contadorAtirar = 0;
-		} else if (contadorAtirar == 15){
+		} else if (contadorAtirar == 15) {
 			atirando = false;
 			if (viradoPara == -1) {
 				// definindo animação 2/2 de atirar para esquerda
@@ -84,7 +72,7 @@ public class Atirador extends Inimigo {
 			contadorAtirar++;
 		}
 	}
-	
+
 	private void baixarArma() {
 		contadorAbaixar++;
 		if (contadorAbaixar == 30) {

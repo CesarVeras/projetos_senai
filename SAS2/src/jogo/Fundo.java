@@ -3,9 +3,10 @@ package jogo;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+import br.senai.sc.engine.Utils;
+
 public class Fundo extends ObjetoGrafico {
 	private int pontoMaximoEsquerdo;
-	private int pontoMaximoDireito;
 	private boolean atingiuPontoMaximo;
 
 	private int movendo; // 0 - parado; 1 - direita; -1 - esquerda;
@@ -14,13 +15,12 @@ public class Fundo extends ObjetoGrafico {
 			int velX, int velY) {
 		super(posX, posY, width, height, velX, velY, sprite);
 		pontoMaximoEsquerdo = getPosX() - 2 * getWidth();
-		pontoMaximoDireito = getPosX() + 3 * getWidth();
 	}
 
 	@Override
 	public void update() {
 		if (movendo == 1) {
-			if (getPosX() + getWidth() < pontoMaximoDireito) {
+			if (getPosX() + getWidth() < Utils.getInstance().getWidth()) {
 				setPosX(getPosX() + getVelX());
 				atingiuPontoMaximo = false;
 			} else {

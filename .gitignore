@@ -1,4 +1,7 @@
 .metadata
 .recommenders
 */bin
-.class
+*.class
+Aula04/bin/
+Aula12/bin/
+SAS2/bin/

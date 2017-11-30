@@ -13,8 +13,12 @@ public class Chao extends ObjetoGrafico{
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.green);
-		g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());
+		if (getSprite() == null) {
+			g.setColor(Color.green);
+			g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());			
+		} else {
+			g.drawImage(getSprite(), getPosX(), getPosY(), getWidth(), getHeight(), null);
+		}
 		
 	}
 }

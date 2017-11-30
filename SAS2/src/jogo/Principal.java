@@ -26,6 +26,7 @@ public class Principal extends Game {
 	private Personagem trump;
 	private Atirador atirador;
 	private Chao chao;
+	private Chao chao2;
 
 	public Principal() {
 		addMouseListener(new ControleMouse());
@@ -89,6 +90,7 @@ public class Principal extends Game {
 		trump = new Personagem();
 		atirador = new Atirador();
 		chao = new Chao(0, 790, Utils.getInstance().getWidth(), 100, null);
+		chao2 = new Chao(50, 300, 400, 100, null);
 	}
 
 	@Override
@@ -116,6 +118,7 @@ public class Principal extends Game {
 			fundo.update();
 			fundo.draw(getGraphics2D());
 //			chao.draw(getGraphics2D());
+			chao2.draw(getGraphics2D());
 			trump.update();
 			trump.draw(getGraphics2D());
 			atirador.update();

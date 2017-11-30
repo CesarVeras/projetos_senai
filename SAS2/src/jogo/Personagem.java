@@ -1,24 +1,35 @@
 package jogo;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import br.senai.sc.engine.Utils;
 
 public class Personagem extends ObjetoVivo {
-	private boolean gravidade; // TODO precisa implementar gravidade para pulo
+	private boolean gravidade;
+	private int valorGravidade;
 	private boolean pulando;
 	private boolean eraEsquerda;
 	private boolean dandoSoco;
 	private boolean indoPraEsquerda;
 	private boolean indoPraDireita;
 	private boolean podeAndar;
+	private int limitePulo;
+	private int contadorPulo;
 
 	// private int contadorSoco;
 
 	public Personagem() {
-		super(Utils.getInstance().getWidth() / 2, 615, 167, 180, 10, 10, Utils
-				.getInstance().loadImage("imagens/personagem.png"), 4, 5, 5);
-
+		super(Utils.getInstance().getWidth() / 2, 0, 167, 180, 10, 10,
+				Utils.getInstance().loadImage("imagens/personagem.png"), 4, 5, 5);
+		contadorPulo = 0;
+		limitePulo = 200;
+		valorGravidade = 20;
+		gravidade = true;
 	}
-
+	
 	@Override
 	public void update() {
 		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 2) {
@@ -33,13 +44,27 @@ public class Personagem extends ObjetoVivo {
 				setPosX(getPosX() + getVelX());
 			}
 		} else if (indoPraEsquerda) {
-			if ((!isColidindoComCaixaEsquerda() || podeAndar)
-					&& (getPosX() > 0)) {
+			if ((!isColidindoComCaixaEsquerda() || podeAndar) && (getPosX() > 0)) {
 				setPosX(getPosX() + getVelX());
 			}
 		}
 		if (dandoSoco) {
 			darSoco();
+		}
+
+		if (gravidade && !pulando) {
+			setPosY(getPosY() + valorGravidade);
+		}
+
+		if (pulando) {
+			if (contadorPulo < limitePulo) {
+				contadorPulo += 20;
+				setPosY(getPosY() - 20);
+			} else {
+				contadorPulo = 0;
+				gravidade = true;
+				pulando = false;
+			}
 		}
 	}
 
@@ -74,8 +99,14 @@ public class Personagem extends ObjetoVivo {
 		return isColidindoComCaixaDireita() || isColidindoComCaixaEsquerda();
 	}
 
-	public boolean colidindoComChao(Chao chao) {
-		// TODO realizar verificação com qualquer tipo de chão
+	public boolean colidindoComChao(LinkedList<Chao> plataformas) {
+		for (int i = 0; i < plataformas.size(); i++) {
+			if (getRectangle().intersects(plataformas.get(i).getRectangle())) {
+				gravidade = false;
+				return true;
+			}
+		}
+		if (!pulando) gravidade = true;
 		return false;
 	}
 
@@ -137,5 +168,45 @@ public class Personagem extends ObjetoVivo {
 
 	public void setPodeAndar(boolean podeAndar) {
 		this.podeAndar = podeAndar;
+	}
+
+	public boolean isGravidade() {
+		return gravidade;
+	}
+
+	public void setGravidade(boolean gravidade) {
+		this.gravidade = gravidade;
+	}
+
+	public boolean isDandoSoco() {
+		return dandoSoco;
+	}
+
+	public void setDandoSoco(boolean dandoSoco) {
+		this.dandoSoco = dandoSoco;
+	}
+
+	public int getLimitePulo() {
+		return limitePulo;
+	}
+
+	public void setLimitePulo(int limitePulo) {
+		this.limitePulo = limitePulo;
+	}
+
+	public int getContadorPulo() {
+		return contadorPulo;
+	}
+
+	public void setContadorPulo(int contadorPulo) {
+		this.contadorPulo = contadorPulo;
+	}
+
+	public int getValorGravidade() {
+		return valorGravidade;
+	}
+
+	public void setValorGravidade(int valorGravidade) {
+		this.valorGravidade = valorGravidade;
 	}
 }

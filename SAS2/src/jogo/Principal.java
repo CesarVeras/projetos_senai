@@ -5,6 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
@@ -25,16 +26,16 @@ public class Principal extends Game {
 	private Fundo fundo;
 	private Personagem trump;
 	private Atirador atirador;
-	private Chao chao;
-	private Chao chao2;
-
+	private LinkedList<Chao> plataformas;
+	
 	public Principal() {
+		super("Jogo", 1000,700);
 		addMouseListener(new ControleMouse());
 		addKeyListener(new ControleKey());
 	}
 
 	public static void main(String[] args) {
-		Principal p = new Principal	();
+		Principal p = new Principal();
 		p.startGame();
 	}
 
@@ -86,11 +87,15 @@ public class Principal extends Game {
 						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 + 5,
 								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
 				false);
-		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Utils.getInstance().loadImage("imagens/cenario.png"), 10, 0);
+		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
+				Utils.getInstance().loadImage("imagens/cenario.png"), 10, 0);
 		trump = new Personagem();
 		atirador = new Atirador();
-		chao = new Chao(0, 790, Utils.getInstance().getWidth(), 100, null);
-		chao2 = new Chao(50, 300, 400, 100, null);
+		plataformas = new LinkedList<>();
+		plataformas.add(new Chao(0, 600, Utils.getInstance().getWidth(), 100, null));
+		plataformas.add(new Chao(50, 450, 400, 100, null));
+		
+		requestFocus();
 	}
 
 	@Override
@@ -114,13 +119,14 @@ public class Principal extends Game {
 				opcoes.getBotao(1).setSprite(Utils.getInstance().loadImage("imagens/SEMSOM.png"));
 			}
 		} else if (emJogo) {
-			desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.WHITE);
 			fundo.update();
 			fundo.draw(getGraphics2D());
 //			chao.draw(getGraphics2D());
-			chao2.draw(getGraphics2D());
+			plataformas.get(1).draw(getGraphics2D());
+			plataformas.get(0).draw(getGraphics2D());
 			trump.update();
 			trump.draw(getGraphics2D());
+			trump.colidindoComChao(plataformas);
 			atirador.update();
 			atirador.draw(getGraphics2D());
 		} else if (pausa.isVisivel()) {
@@ -132,16 +138,22 @@ public class Principal extends Game {
 	public void aposTermino() {
 
 	}
-	
+
 	public void moverTudo(int direcao) {
 		fundo.setMovendo(direcao);
 		atirador.setMoving(direcao);
+		for (int i = 0; i < plataformas.size(); i++) {
+			if (i != 0) {
+				plataformas.get(i).setPosX(plataformas.get(i).getPosX() + fundo.getVelX() * direcao);
+			}
+		}
 	}
 
 	public class ControleKey extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == e.VK_X) {
+			int key = e.getKeyCode();
+			if (key == e.VK_X) {
 				menu.setVisivel(false);
 				historia.setVisivel(false);
 				creditos.setVisivel(false);
@@ -150,7 +162,7 @@ public class Principal extends Game {
 				emJogo = true;
 				pausa.setVisivel(false);
 			}
-			if (e.getKeyCode() == e.VK_ESCAPE) {
+			if (key == e.VK_ESCAPE) {
 				if (menu.isVisivel()) {
 					System.exit(0);
 				} else if (emJogo) {
@@ -167,13 +179,13 @@ public class Principal extends Game {
 				}
 			}
 			if (emJogo) {
-				if(e.getKeyCode() == e.VK_LEFT) {
+				if (key == e.VK_LEFT) {
 					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
 					trump.setIndoPraEsquerda(true);
 					if (trump.isColidindoComCaixaEsquerda()) {
 						moverTudo(1);
 					}
-				} else if (e.getKeyCode() == e.VK_RIGHT) {
+				} else if (key == e.VK_RIGHT) {
 					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
 					trump.setIndoPraDireita(true);
 					if (trump.isColidindoComCaixaDireita()) {
@@ -181,36 +193,43 @@ public class Principal extends Game {
 					}
 				}
 				
-				if(e.getKeyCode() == e.VK_Z) {
+				if (key == e.VK_UP) {
+					if (trump.colidindoComChao(plataformas)) {
+						trump.setPulando(true);
+					}
+				}
+				
+				if (key == e.VK_Z) {
 					trump.darSoco();
 				}
 				
-				if (e.getKeyCode() == KeyEvent.VK_D) {
+				if (key == KeyEvent.VK_D) {
 					atirador.setMoving(1);
-				} else if (e.getKeyCode() == KeyEvent.VK_A) {
+				} else if (key == KeyEvent.VK_A) {
 					atirador.setMoving(-1);
 				}
 			}
 		}
-		
+
 		@Override
 		public void keyReleased(KeyEvent e) {
+			int key = e.getKeyCode();
 			if (emJogo) {
-				if(e.getKeyCode() == e.VK_LEFT) {
+				if (key == e.VK_LEFT) {
 					trump.setIndoPraEsquerda(false);
 					moverTudo(0);
-				} 
-				
-				if(e.getKeyCode() == e.VK_RIGHT) {
+				}
+
+				if (key == e.VK_RIGHT) {
 					trump.setIndoPraDireita(false);
 					moverTudo(0);
 				}
-				
-				if (e.getKeyCode() == e.VK_A || e.getKeyCode() == e.VK_D) {
+
+				if (key == e.VK_A || e.getKeyCode() == e.VK_D) {
 					atirador.setMoving(0);
 				}
-				
-				if (e.getKeyCode() == e.VK_SPACE) {
+
+				if (key == e.VK_SPACE) {
 					atirador.atirar();
 				}
 			}

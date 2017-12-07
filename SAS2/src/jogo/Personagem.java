@@ -5,6 +5,9 @@ import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.swing.JOptionPane;
+
+import sun.java2d.pipe.DrawImage;
 import br.senai.sc.engine.Utils;
 
 public class Personagem extends ObjetoVivo {
@@ -18,21 +21,35 @@ public class Personagem extends ObjetoVivo {
 	private boolean podeAndar;
 	private int limitePulo;
 	private int contadorPulo;
-
-	// private int contadorSoco;
+	private int contadorSoco;
 
 	public Personagem() {
-		super(Utils.getInstance().getWidth() / 2, 0, 167, 180, 10, 10,
-				Utils.getInstance().loadImage("imagens/personagem.png"), 4, 5, 5);
+		super(Utils.getInstance().getWidth() / 2, 680, 64, 76, 10, 10, Utils
+				.getInstance().loadImage("imagens/spritesheet_personagem.png"),
+				4, 4, 5);
 		contadorPulo = 0;
 		limitePulo = 200;
 		valorGravidade = 20;
 		gravidade = true;
+		contadorSoco = 0;
 	}
-	
+
+	public boolean caiuDaTela() {
+		if (getPosY() + getHeight() >= Utils.getInstance().getHeight()) {
+			reset();
+		}
+		return (getPosY() + getHeight() >= Utils.getInstance().getHeight());
+	}
+
+	public void reset() {
+		this.setPosX(Utils.getInstance().getWidth() / 2);
+		this.setPosY(680);
+		this.setVidas(getVidas() - 1);
+	}
+
 	@Override
 	public void update() {
-		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 2) {
+		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 0) {
 			setFrameX(getFrameX() + 1);
 			if (getFrameX() == getColunas()) {
 				setFrameX(0);
@@ -44,7 +61,8 @@ public class Personagem extends ObjetoVivo {
 				setPosX(getPosX() + getVelX());
 			}
 		} else if (indoPraEsquerda) {
-			if ((!isColidindoComCaixaEsquerda() || podeAndar) && (getPosX() > 0)) {
+			if ((!isColidindoComCaixaEsquerda() || podeAndar)
+					&& (getPosX() > 0)) {
 				setPosX(getPosX() + getVelX());
 			}
 		}
@@ -70,21 +88,35 @@ public class Personagem extends ObjetoVivo {
 
 	public void darSoco() {
 		if (!dandoSoco) {
+			contadorSoco = 0;
 			dandoSoco = true;
-			setFrameX(0);
+			setFrameY(0);
 			if (eraEsquerda) {
-				setFrameY(2);
+				setFrameX(2);
 			} else {
-				setFrameY(1);
+				setFrameX(3);
 			}
 		} else {
-			setFrameX(1);
-			dandoSoco = false;
-			// contadorSoco++;
-			// if (contadorSoco == 2) {
-			// contadorSoco = 0;
-			// }
+			if (contadorSoco == 15) {
+				dandoSoco = false;
+			} else {
+				setFrameY(0);
+				if (eraEsquerda) {
+					setFrameX(2);
+				} else {
+					setFrameX(3);
+				}
+				contadorSoco++;
+			}
 		}
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX() + getWidth(),
+				getPosY() + getHeight(), getFrameX() * getWidth(),
+				getFrameY() * 96, getFrameX() * getWidth() + getWidth(),
+				getFrameY() * 96 + 74, null);
 	}
 
 	public boolean isColidindoComCaixaDireita() {
@@ -106,7 +138,19 @@ public class Personagem extends ObjetoVivo {
 				return true;
 			}
 		}
-		if (!pulando) gravidade = true;
+		if (!pulando)
+			gravidade = true;
+		return false;
+	}
+
+	public boolean colisao(Inimigo inimigo) {
+		if (getRectangle().intersects(inimigo.getRectangle())) {
+			if (dandoSoco) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 		return false;
 	}
 
@@ -118,10 +162,10 @@ public class Personagem extends ObjetoVivo {
 		if (indoPraEsquerda != this.indoPraEsquerda) {
 			if (!indoPraEsquerda) {
 				setFrameY(0);
-				setFrameX(1);
+				setFrameX(0);
 				eraEsquerda = true;
 			} else {
-				setFrameY(4);
+				setFrameY(2);
 				setVelX(Math.abs(getVelX()) * -1);
 			}
 			this.indoPraEsquerda = indoPraEsquerda;
@@ -136,10 +180,10 @@ public class Personagem extends ObjetoVivo {
 		if (indoPraDireita != this.indoPraDireita) {
 			if (!indoPraDireita) {
 				setFrameY(0);
-				setFrameX(0);
+				setFrameX(1);
 				eraEsquerda = false;
 			} else {
-				setFrameY(3);
+				setFrameY(1);
 				setVelX(Math.abs(getVelX()));
 			}
 			this.indoPraDireita = indoPraDireita;

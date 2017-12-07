@@ -25,11 +25,11 @@ public class Principal extends Game {
 	private TelaEstatica pausa;
 	private Fundo fundo;
 	private Personagem trump;
-	private Atirador atirador;
+	private Explosivo explosivo;
 	private LinkedList<Chao> plataformas;
+	private LinkedList<Inimigo> inimigos;
 	
 	public Principal() {
-		super("Jogo", 1000,700);
 		addMouseListener(new ControleMouse());
 		addKeyListener(new ControleKey());
 	}
@@ -90,10 +90,12 @@ public class Principal extends Game {
 		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
 				Utils.getInstance().loadImage("imagens/cenario.png"), 10, 0);
 		trump = new Personagem();
-		atirador = new Atirador();
+		inimigos = new LinkedList<>();
+		explosivo = new Explosivo(trump);
+		inimigos.add(explosivo);
 		plataformas = new LinkedList<>();
-		plataformas.add(new Chao(0, 600, Utils.getInstance().getWidth(), 100, null));
-		plataformas.add(new Chao(50, 450, 400, 100, null));
+		plataformas.add(new Chao(0, 780, Utils.getInstance().getWidth(), 100, null));
+		plataformas.add(new Chao(50, 630, 400, 100, null));
 		
 		requestFocus();
 	}
@@ -127,8 +129,31 @@ public class Principal extends Game {
 			trump.update();
 			trump.draw(getGraphics2D());
 			trump.colidindoComChao(plataformas);
-			atirador.update();
-			atirador.draw(getGraphics2D());
+			trump.caiuDaTela();
+			if (trump.isIndoPraEsquerda() && trump.isColidindoComCaixaEsquerda()) {
+				moverTudo(1);
+			} else if (trump.isIndoPraDireita() && trump.isColidindoComCaixaDireita()) {
+				moverTudo(-1);
+			} else {
+				moverTudo(0);
+			}
+			
+			for (Inimigo inimigo : inimigos) {
+				if (inimigo != null) {
+					inimigo.draw(getGraphics2D());
+					inimigo.update();
+				}
+			}
+			
+			for (int i = 0; i < inimigos.size(); i++) {
+				if (trump.colisao(inimigos.get(i))) {
+					inimigos.remove(inimigos.get(i));
+				}
+			}
+			desenharString("VIDAS: " + trump.getVidas(), 50, 50, Color.RED, 20);
+			if (trump.getVidas() <= 0) {
+				init();
+			}
 		} else if (pausa.isVisivel()) {
 			pausa.draw(getGraphics2D());
 		}
@@ -141,12 +166,9 @@ public class Principal extends Game {
 
 	public void moverTudo(int direcao) {
 		fundo.setMovendo(direcao);
-		atirador.setMoving(direcao);
-		for (int i = 0; i < plataformas.size(); i++) {
-			if (i != 0) {
-				plataformas.get(i).setPosX(plataformas.get(i).getPosX() + fundo.getVelX() * direcao);
-			}
-		}
+//		atirador.setMoving(direcao);
+		plataformas.get(0).setPosX(plataformas.get(0).getPosX() + fundo.getVelX() * direcao);
+		plataformas.get(1).setPosX(plataformas.get(1).getPosX() + fundo.getVelX() * direcao);
 	}
 
 	public class ControleKey extends KeyAdapter {
@@ -183,13 +205,11 @@ public class Principal extends Game {
 					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
 					trump.setIndoPraEsquerda(true);
 					if (trump.isColidindoComCaixaEsquerda()) {
-						moverTudo(1);
 					}
 				} else if (key == e.VK_RIGHT) {
 					trump.setPodeAndar(fundo.isAtingiuPontoMaximo());
 					trump.setIndoPraDireita(true);
 					if (trump.isColidindoComCaixaDireita()) {
-						moverTudo(-1);
 					}
 				}
 				
@@ -202,12 +222,6 @@ public class Principal extends Game {
 				if (key == e.VK_Z) {
 					trump.darSoco();
 				}
-				
-				if (key == KeyEvent.VK_D) {
-					atirador.setMoving(1);
-				} else if (key == KeyEvent.VK_A) {
-					atirador.setMoving(-1);
-				}
 			}
 		}
 
@@ -217,20 +231,17 @@ public class Principal extends Game {
 			if (emJogo) {
 				if (key == e.VK_LEFT) {
 					trump.setIndoPraEsquerda(false);
-					moverTudo(0);
 				}
 
 				if (key == e.VK_RIGHT) {
 					trump.setIndoPraDireita(false);
-					moverTudo(0);
 				}
 
 				if (key == e.VK_A || e.getKeyCode() == e.VK_D) {
-					atirador.setMoving(0);
 				}
 
 				if (key == e.VK_SPACE) {
-					atirador.atirar();
+					explosivo.explodir();
 				}
 			}
 		}

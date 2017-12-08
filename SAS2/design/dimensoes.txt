@@ -1,0 +1,11 @@
+trump
+width 64 x height 76
+
+explosivo
+width 50 x height 60
+
+atirador
+width 51 x height 41
+
+boss
+width x height

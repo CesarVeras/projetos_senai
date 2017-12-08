@@ -2,7 +2,7 @@ package jogo;
 
 import java.awt.Image;
 
-public class ObjetoVivo extends ObjetoAnimado{
+public abstract class ObjetoVivo extends ObjetoAnimado{
 	private int vidas;
 
 	public ObjetoVivo(int posX, int posY, int width, int height, int velX,

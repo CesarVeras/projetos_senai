@@ -1,5 +1,6 @@
 package jogo;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 
 public class Chefe extends Inimigo{
@@ -11,6 +12,12 @@ public class Chefe extends Inimigo{
 
 	@Override
 	public void update() {
+		
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		// TODO Auto-generated method stub
 		
 	}
 	

@@ -17,13 +17,6 @@ public abstract class ObjetoAnimado extends ObjetoGrafico {
 		this.linhas = linhas;
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
-		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX() + getWidth(), getPosY() + getHeight(),
-				getFrameX() * getWidth(), getFrameY() * getHeight(), getFrameX() * getWidth() + getWidth(),
-				getFrameY() * getHeight() + getHeight(), null);
-	}
-
 	public int getFrameX() {
 		return frameX;
 	}

@@ -1,13 +1,12 @@
 package jogo;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
-
-import javax.swing.JOptionPane;
 
 import br.senai.sc.engine.Game;
 import br.senai.sc.engine.Utils;
@@ -28,6 +27,7 @@ public class Principal extends Game {
 	private Explosivo explosivo;
 	private LinkedList<Chao> plataformas;
 	private LinkedList<Inimigo> inimigos;
+	private Image vida;
 	
 	public Principal() {
 		addMouseListener(new ControleMouse());
@@ -40,64 +40,8 @@ public class Principal extends Game {
 	}
 
 	@Override
-	public void init() {
-		som = true;
-		menu = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo.png"),
-				new Botao[] {
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, 200, 300, 100,
-								Utils.getInstance().loadImage("imagens/JOGAR.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, 310, 300, 100,
-								Utils.getInstance().loadImage("imagens/CRÉDITOS.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, 420, 300, 100,
-								Utils.getInstance().loadImage("imagens/RANKING.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, 530, 300, 100,
-								Utils.getInstance().loadImage("imagens/OPÇÕES.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, 640, 300, 100,
-								Utils.getInstance().loadImage("imagens/SAIR.png")), },
-				true);
-
-		historia = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_historia.png"),
-				new Botao[] { new Botao(Utils.getInstance().getWidth() - 330, Utils.getInstance().getHeight() - 130,
-						300, 100, Utils.getInstance().loadImage("imagens/PULAR.png")), },
-				false);
-
-		creditos = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_creditos.png"),
-				new Botao[] { new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
-						Utils.getInstance().loadImage("imagens/VOLTAR.png")), },
-				false);
-
-		ranking = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_ranking.png"),
-				new Botao[] { new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
-						Utils.getInstance().loadImage("imagens/VOLTAR.png")), },
-				false);
-
-		opcoes = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_opcoes.png"),
-				new Botao[] {
-						new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
-								Utils.getInstance().loadImage("imagens/VOLTAR.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2, 300,
-								100, Utils.getInstance().loadImage("imagens/COMSOM.png")) },
-
-				false);
-
-		pausa = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_pausa.png"),
-				new Botao[] {
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 - 105,
-								300, 100, Utils.getInstance().loadImage("imagens/CONTINUAR.png")),
-						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 + 5,
-								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
-				false);
-		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
-				Utils.getInstance().loadImage("imagens/cenario.png"), 10, 0);
-		trump = new Personagem();
-		inimigos = new LinkedList<>();
-		explosivo = new Explosivo(trump);
-		inimigos.add(explosivo);
-		plataformas = new LinkedList<>();
-		plataformas.add(new Chao(0, 780, Utils.getInstance().getWidth(), 100, null));
-		plataformas.add(new Chao(50, 630, 400, 100, null));
-		
-		requestFocus();
+	public void aposTermino() {
+	
 	}
 
 	@Override
@@ -150,7 +94,10 @@ public class Principal extends Game {
 					inimigos.remove(inimigos.get(i));
 				}
 			}
-			desenharString("VIDAS: " + trump.getVidas(), 50, 50, Color.RED, 20);
+			for (int i = 0; i < trump.getVidas(); i++) {
+				getGraphics2D().drawImage(vida, 50*i + 50, 50, 32, 32, null);
+			}
+			desenharString("Contador Explosão: " + explosivo.getContadorExplosao(), 50, 100, Color.YELLOW, 20);
 			if (trump.getVidas() <= 0) {
 				init();
 			}
@@ -160,15 +107,75 @@ public class Principal extends Game {
 	}
 
 	@Override
-	public void aposTermino() {
-
+	public void init() {
+		vida = Utils.getInstance().loadImage("imagens/vida.png");
+		som = true;
+		menu = new TelaEstatica(Utils.getInstance().loadImage("imagens/cenarioOFICIAL.png"), Utils.getInstance().loadImage("imagens/logo.png"),
+				new Botao[] {
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, 200, 300, 100,
+								Utils.getInstance().loadImage("imagens/JOGAR.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, 310, 300, 100,
+								Utils.getInstance().loadImage("imagens/CRÉDITOS.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, 420, 300, 100,
+								Utils.getInstance().loadImage("imagens/RANKING.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, 530, 300, 100,
+								Utils.getInstance().loadImage("imagens/OPÇÕES.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, 640, 300, 100,
+								Utils.getInstance().loadImage("imagens/SAIR.png")), },
+				true);
+	
+		historia = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_historia.png"),
+				new Botao[] { new Botao(Utils.getInstance().getWidth() - 330, Utils.getInstance().getHeight() - 130,
+						300, 100, Utils.getInstance().loadImage("imagens/PULAR.png")), },
+				false);
+	
+		creditos = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_creditos.png"),
+				new Botao[] { new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
+						Utils.getInstance().loadImage("imagens/VOLTAR.png")), },
+				false);
+	
+		ranking = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_ranking.png"),
+				new Botao[] { new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
+						Utils.getInstance().loadImage("imagens/VOLTAR.png")), },
+				false);
+	
+		opcoes = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_opcoes.png"),
+				new Botao[] {
+						new Botao(30, Utils.getInstance().getHeight() - 130, 300, 100,
+								Utils.getInstance().loadImage("imagens/VOLTAR.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2, 300,
+								100, Utils.getInstance().loadImage("imagens/COMSOM.png")) },
+	
+				false);
+	
+		pausa = new TelaEstatica(null, Utils.getInstance().loadImage("imagens/logo_pausa.png"),
+				new Botao[] {
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 - 105,
+								300, 100, Utils.getInstance().loadImage("imagens/CONTINUAR.png")),
+						new Botao(Utils.getInstance().getWidth() / 2 - 150, Utils.getInstance().getHeight() / 2 + 5,
+								300, 100, Utils.getInstance().loadImage("imagens/MENU.png")), },
+				false);
+		fundo = new Fundo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(),
+				Utils.getInstance().loadImage("imagens/cenarioOFICIAL.png"), 10, 0);
+		trump = new Personagem();
+		inimigos = new LinkedList<>();
+		explosivo = new Explosivo(trump);
+		inimigos.add(explosivo);
+		plataformas = new LinkedList<>();
+		plataformas.add(new Chao(0, 780, Utils.getInstance().getWidth(), 100, null));
+		plataformas.add(new Chao(50, 630, 400, 100, null));
+		
+		requestFocus();
 	}
 
 	public void moverTudo(int direcao) {
 		fundo.setMovendo(direcao);
 //		atirador.setMoving(direcao);
-		plataformas.get(0).setPosX(plataformas.get(0).getPosX() + fundo.getVelX() * direcao);
 		plataformas.get(1).setPosX(plataformas.get(1).getPosX() + fundo.getVelX() * direcao);
+//		for (int i = 0; i < plataformas.size(); i++) {
+//			plataformas.get(i).setPosX(plataformas.get(i).getPosX() + fundo.getVelX() * direcao);
+//		}
+//		plataformas.get(1).setPosX(plataformas.get(1).getPosX() + fundo.getVelX() * direcao);
 	}
 
 	public class ControleKey extends KeyAdapter {

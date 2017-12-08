@@ -1,13 +1,8 @@
 package jogo;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.swing.JOptionPane;
-
-import sun.java2d.pipe.DrawImage;
 import br.senai.sc.engine.Utils;
 
 public class Personagem extends ObjetoVivo {
@@ -22,9 +17,10 @@ public class Personagem extends ObjetoVivo {
 	private int limitePulo;
 	private int contadorPulo;
 	private int contadorSoco;
+	private int contadorSprite;
 
 	public Personagem() {
-		super(Utils.getInstance().getWidth() / 2, 680, 64, 76, 10, 10, Utils
+		super(Utils.getInstance().getWidth() / 2, 680, 64, 100, 10, 10, Utils
 				.getInstance().loadImage("imagens/spritesheet_personagem.png"),
 				4, 4, 5);
 		contadorPulo = 0;
@@ -32,6 +28,7 @@ public class Personagem extends ObjetoVivo {
 		valorGravidade = 20;
 		gravidade = true;
 		contadorSoco = 0;
+		contadorSprite = 0;
 	}
 
 	public boolean caiuDaTela() {
@@ -41,49 +38,27 @@ public class Personagem extends ObjetoVivo {
 		return (getPosY() + getHeight() >= Utils.getInstance().getHeight());
 	}
 
-	public void reset() {
-		this.setPosX(Utils.getInstance().getWidth() / 2);
-		this.setPosY(680);
-		this.setVidas(getVidas() - 1);
+	public boolean colisao(Inimigo inimigo) {
+		if (getRectangle().intersects(inimigo.getRectangle())) {
+			if (dandoSoco) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
 	}
 
-	@Override
-	public void update() {
-		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 0) {
-			setFrameX(getFrameX() + 1);
-			if (getFrameX() == getColunas()) {
-				setFrameX(0);
+	public boolean colidindoComChao(LinkedList<Chao> plataformas) {
+		for (int i = 0; i < plataformas.size(); i++) {
+			if (getRectangle().intersects(plataformas.get(i).getRectangle())) {
+				gravidade = false;
+				return true;
 			}
 		}
-		if (indoPraDireita) {
-			if ((!isColidindoComCaixaDireita() || podeAndar)
-					&& (getPosX() + getWidth() < Utils.getInstance().getWidth())) {
-				setPosX(getPosX() + getVelX());
-			}
-		} else if (indoPraEsquerda) {
-			if ((!isColidindoComCaixaEsquerda() || podeAndar)
-					&& (getPosX() > 0)) {
-				setPosX(getPosX() + getVelX());
-			}
-		}
-		if (dandoSoco) {
-			darSoco();
-		}
-
-		if (gravidade && !pulando) {
-			setPosY(getPosY() + valorGravidade);
-		}
-
-		if (pulando) {
-			if (contadorPulo < limitePulo) {
-				contadorPulo += 20;
-				setPosY(getPosY() - 20);
-			} else {
-				contadorPulo = 0;
-				gravidade = true;
-				pulando = false;
-			}
-		}
+		if (!pulando)
+			gravidade = true;
+		return false;
 	}
 
 	public void darSoco() {
@@ -110,13 +85,67 @@ public class Personagem extends ObjetoVivo {
 			}
 		}
 	}
-
+	
 	@Override
 	public void draw(Graphics2D g) {
 		g.drawImage(getSprite(), getPosX(), getPosY(), getPosX() + getWidth(),
 				getPosY() + getHeight(), getFrameX() * getWidth(),
 				getFrameY() * 96, getFrameX() * getWidth() + getWidth(),
 				getFrameY() * 96 + 74, null);
+	}
+
+	private void passarSprite(){
+		if (contadorSprite == 3) {
+			contadorSprite = 0;
+			setFrameX(getFrameX() + 1);
+			if (getFrameX() == getColunas()) {
+				setFrameX(0);
+			}
+		} else {
+			contadorSprite++;
+		}
+	}
+
+	public void reset() {
+		this.setPosX(Utils.getInstance().getWidth() / 2);
+		this.setPosY(680);
+		this.setVidas(getVidas() - 1);
+	}
+
+	@Override
+	public void update() {
+		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 0) {
+			passarSprite();
+		}
+		if (indoPraDireita) {
+			if ((!isColidindoComCaixaDireita() || podeAndar)
+					&& (getPosX() + getWidth() < Utils.getInstance().getWidth())) {
+				setPosX(getPosX() + getVelX());
+			}
+		} else if (indoPraEsquerda) {
+			if ((!isColidindoComCaixaEsquerda() || podeAndar)
+					&& (getPosX() > 0)) {
+				setPosX(getPosX() + getVelX());
+			}
+		}
+		if (dandoSoco) {
+			darSoco();
+		}
+	
+		if (gravidade && !pulando) {
+			setPosY(getPosY() + valorGravidade);
+		}
+	
+		if (pulando) {
+			if (contadorPulo < limitePulo) {
+				contadorPulo += 20;
+				setPosY(getPosY() - 20);
+			} else {
+				contadorPulo = 0;
+				gravidade = true;
+				pulando = false;
+			}
+		}
 	}
 
 	public boolean isColidindoComCaixaDireita() {
@@ -129,29 +158,6 @@ public class Personagem extends ObjetoVivo {
 
 	public boolean isColidindoComCaixa() {
 		return isColidindoComCaixaDireita() || isColidindoComCaixaEsquerda();
-	}
-
-	public boolean colidindoComChao(LinkedList<Chao> plataformas) {
-		for (int i = 0; i < plataformas.size(); i++) {
-			if (getRectangle().intersects(plataformas.get(i).getRectangle())) {
-				gravidade = false;
-				return true;
-			}
-		}
-		if (!pulando)
-			gravidade = true;
-		return false;
-	}
-
-	public boolean colisao(Inimigo inimigo) {
-		if (getRectangle().intersects(inimigo.getRectangle())) {
-			if (dandoSoco) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
 	}
 
 	public boolean isIndoPraEsquerda() {

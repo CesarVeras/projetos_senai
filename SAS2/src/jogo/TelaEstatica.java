@@ -23,7 +23,7 @@ public class TelaEstatica {
 	}
 
 	public void draw(Graphics2D g) {
-		g.drawImage(background, 0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getWidth(), null);
+		g.drawImage(background, 0, -400, Utils.getInstance().getWidth() + 400, Utils.getInstance().getWidth(), null);
 		if (header != null) {
 			g.drawImage(header, Utils.getInstance().getWidth()/2 - widthHeader/2, 30, widthHeader, heightHeader, null);
 		}

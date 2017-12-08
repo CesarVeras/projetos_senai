@@ -15,7 +15,7 @@ public class Chao extends ObjetoGrafico{
 	public void draw(Graphics2D g) {
 		if (getSprite() == null) {
 			g.setColor(Color.green);
-			g.fillRect(getPosX(), getPosY(), getWidth(), getHeight());			
+			g.drawRect(getPosX(), getPosY(), getWidth(), getHeight());			
 		} else {
 			g.drawImage(getSprite(), getPosX(), getPosY(), getWidth(), getHeight(), null);
 		}

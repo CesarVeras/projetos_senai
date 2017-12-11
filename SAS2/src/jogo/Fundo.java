@@ -11,8 +11,7 @@ public class Fundo extends ObjetoGrafico {
 
 	private int movendo; // 0 - parado; 1 - direita; -1 - esquerda;
 
-	public Fundo(int posX, int posY, int width, int height, Image sprite,
-			int velX, int velY) {
+	public Fundo(int posX, int posY, int width, int height, Image sprite, int velX, int velY) {
 		super(posX, posY, width, height, velX, velY, sprite);
 		pontoMaximoEsquerdo = getPosX() - 2 * getWidth();
 	}
@@ -39,16 +38,11 @@ public class Fundo extends ObjetoGrafico {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(getSprite(), getPosX() - 2 * getWidth(), getPosY(),
-				getWidth(), getHeight(), null);
-		g.drawImage(getSprite(), getPosX() - getWidth(), getPosY(), getWidth(),
-				getHeight(), null);
-		g.drawImage(getSprite(), getPosX(), getPosY(), getWidth(), getHeight(),
-				null);
-		g.drawImage(getSprite(), getPosX() + getWidth(), getPosY(), getWidth(),
-				getHeight(), null);
-		g.drawImage(getSprite(), getPosX() + 2 * getWidth(), getPosY(),
-				getWidth(), getHeight(), null);
+		g.drawImage(getSprite(), getPosX() - 2 * getWidth(), getPosY(), getWidth(), getHeight(), null);
+		g.drawImage(getSprite(), getPosX() - getWidth(), getPosY(), getWidth(), getHeight(), null);
+		g.drawImage(getSprite(), getPosX(), getPosY(), getWidth(), getHeight(), null);
+		g.drawImage(getSprite(), getPosX() + getWidth(), getPosY(), getWidth(), getHeight(), null);
+		g.drawImage(getSprite(), getPosX() + 2 * getWidth(), getPosY(), getWidth(), getHeight(), null);
 	}
 
 	public int getMovendo() {
@@ -58,7 +52,7 @@ public class Fundo extends ObjetoGrafico {
 	public void setMovendo(int movendo) {
 		this.movendo = movendo;
 	}
-	
+
 	public boolean isAtingiuPontoMaximo() {
 		return atingiuPontoMaximo;
 	}

@@ -3,7 +3,7 @@ package jogo;
 import java.awt.Image;
 
 public abstract class Inimigo extends ObjetoVivo{
-	private int moving;
+	private int movendo;
 
 	public Inimigo(int posX, int posY, int width, int height, int velX,
 			int velY, Image sprite, int colunas,
@@ -12,10 +12,10 @@ public abstract class Inimigo extends ObjetoVivo{
 	}
 
 	public void setMoving(int moving) {
-		this.moving = moving;
+		this.movendo = moving;
 	}
 
 	public int getMoving() {
-		return moving;
+		return movendo;
 	}
 }

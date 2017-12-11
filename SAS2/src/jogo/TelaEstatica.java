@@ -33,6 +33,18 @@ public class TelaEstatica {
 			}
 		}
 	}
+	
+	public void drawAlternativo(Graphics2D g) {
+		g.drawImage(background, 0, -400, Utils.getInstance().getWidth() + 400, Utils.getInstance().getWidth(), null);
+		if (header != null) {
+			g.drawImage(header, Utils.getInstance().getWidth()/2 - widthHeader/2, -50, widthHeader, heightHeader, null);
+		}
+		if (botoes != null) {
+			for (Botao b : botoes) {
+				b.draw(g);
+			}
+		}
+	}
 
 	public Image getBackground() {
 		return background;
@@ -72,5 +84,21 @@ public class TelaEstatica {
 			b = botoes[posicao];
 		}
 		return b;
+	}
+
+	public int getWidthHeader() {
+		return widthHeader;
+	}
+
+	public void setWidthHeader(int widthHeader) {
+		this.widthHeader = widthHeader;
+	}
+
+	public int getHeightHeader() {
+		return heightHeader;
+	}
+
+	public void setHeightHeader(int heightHeader) {
+		this.heightHeader = heightHeader;
 	}
 }

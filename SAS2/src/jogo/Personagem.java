@@ -20,7 +20,7 @@ public class Personagem extends ObjetoVivo {
 	private int contadorSprite;
 
 	public Personagem() {
-		super(Utils.getInstance().getWidth() / 2, 680, 64, 100, 10, 10, Utils
+		super(Utils.getInstance().getWidth() / 2, 500, 64, 100, 10, 10, Utils
 				.getInstance().loadImage("imagens/spritesheet_personagem.png"),
 				4, 4, 5);
 		contadorPulo = 0;
@@ -74,6 +74,12 @@ public class Personagem extends ObjetoVivo {
 		} else {
 			if (contadorSoco == 15) {
 				dandoSoco = false;
+				if (eraEsquerda) {
+					setFrameX(0);
+				} else {
+					setFrameX(1);
+				}
+				setFrameY(0);
 			} else {
 				setFrameY(0);
 				if (eraEsquerda) {
@@ -108,34 +114,34 @@ public class Personagem extends ObjetoVivo {
 
 	public void reset() {
 		this.setPosX(Utils.getInstance().getWidth() / 2);
-		this.setPosY(680);
+		this.setPosY(500);
 		this.setVidas(getVidas() - 1);
 	}
 
 	@Override
 	public void update() {
-		if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 0) {
-			passarSprite();
-		}
-		if (indoPraDireita) {
-			if ((!isColidindoComCaixaDireita() || podeAndar)
-					&& (getPosX() + getWidth() < Utils.getInstance().getWidth())) {
-				setPosX(getPosX() + getVelX());
-			}
-		} else if (indoPraEsquerda) {
-			if ((!isColidindoComCaixaEsquerda() || podeAndar)
-					&& (getPosX() > 0)) {
-				setPosX(getPosX() + getVelX());
-			}
-		}
 		if (dandoSoco) {
 			darSoco();
+		} else {
+			if ((indoPraEsquerda || indoPraDireita) && getFrameY() > 0) {
+				passarSprite();
+			}
+			if (indoPraDireita) {
+				if ((!isColidindoComCaixaDireita() || podeAndar)
+						&& (getPosX() + getWidth() < Utils.getInstance().getWidth())) {
+					setPosX(getPosX() + getVelX());
+				}
+			} else if (indoPraEsquerda) {
+				if ((!isColidindoComCaixaEsquerda() || podeAndar)
+						&& (getPosX() > 0)) {
+					setPosX(getPosX() + getVelX());
+				}
+			}
 		}
 	
 		if (gravidade && !pulando) {
 			setPosY(getPosY() + valorGravidade);
 		}
-	
 		if (pulando) {
 			if (contadorPulo < limitePulo) {
 				contadorPulo += 20;
@@ -169,12 +175,12 @@ public class Personagem extends ObjetoVivo {
 			if (!indoPraEsquerda) {
 				setFrameY(0);
 				setFrameX(0);
-				eraEsquerda = true;
 			} else {
 				setFrameY(2);
 				setVelX(Math.abs(getVelX()) * -1);
 			}
 			this.indoPraEsquerda = indoPraEsquerda;
+			eraEsquerda = true;
 		}
 	}
 
@@ -187,12 +193,12 @@ public class Personagem extends ObjetoVivo {
 			if (!indoPraDireita) {
 				setFrameY(0);
 				setFrameX(1);
-				eraEsquerda = false;
 			} else {
 				setFrameY(1);
 				setVelX(Math.abs(getVelX()));
 			}
 			this.indoPraDireita = indoPraDireita;
+			eraEsquerda = false;
 		}
 	}
 

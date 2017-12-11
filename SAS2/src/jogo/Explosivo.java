@@ -15,7 +15,7 @@ public class Explosivo extends Inimigo {
 	private int contadorSprite;
 
 	public Explosivo(Personagem personagem) {
-		super(Utils.getInstance().getWidth() / 2 + 100, 678, 100, 120, 5, 2,
+		super(Utils.getInstance().getWidth(), (int) (Utils.getInstance().getHeight() * 0.85) - 110, 100, 120, 5, 2,
 				Utils.getInstance().loadImage("imagens/Explosivo.png"), 2, 3, 2);
 		this.trump = personagem;
 		contadorSprite = 0;

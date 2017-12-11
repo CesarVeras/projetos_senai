@@ -8,4 +8,4 @@ atirador
 width 51 x height 41
 
 boss
-width x height
+width 76 x height 76

@@ -3,21 +3,25 @@ package rec;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import br.senai.sc.engine.Game;
 import br.senai.sc.engine.Utils;
 
 public class Roda extends Game{
 	
-	Jogador j;
-	Poder[] poderes;
-	int contadorinvocar;
-	int contadorcafe;
-	int contadoracucar;
-	int contadoragua;
-	int contadorrefrigerante;
-	boolean pegoucafe;
-	boolean pegouacucar;
+	private static final long serialVersionUID = 1L;
+	private Jogador j;
+	private Coletavel[] coletaveis;
+	private int contadorinvocar;
+	private boolean pegoucafe;
+	private boolean pegouacucar;
+	private Random sorteio;
+	private Tela endGame;
+	public static int contadorCafe;
+	public static int contadorAcucar;
+	public static int contadorAgua;
+	public static int contadorRefrigerante;
 	
 	public Roda() {
 		addKeyListener(new Teclado());
@@ -30,97 +34,112 @@ public class Roda extends Game{
 
 	@Override
 	public void aposTermino() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void gameLoop() {
-		desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.black);
-		desenharRetangulo(0, 700, Utils.getInstance().getWidth(), 400, Color.darkGray);
-		desenharString("VIDAS: " + j.vida, 50, 50, Color.red, 60);
-		j.update();
-		j.draw(getGraphics2D());
 		if (j.vida > 0) {
-			if (contadorinvocar == 15) {
-				contadorinvocar = 0;
-				for (int i = 0; i < poderes.length; i++) {
-					if (poderes[i] == null) {
-						poderes[i] = new Poder();
-						break;
-					}
-				}
-			} else {
-				contadorinvocar++;
-			}
-			for (int i = 0; i < poderes.length; i++) {
-				if (poderes[i] != null) {
-					if (poderes[i].foipego(j)) {
-						int qualpoder = poderes[i].qualpoder;
-						if (qualpoder == 0) {
-							contadorcafe++;
-							pegoucafe = true;
-						} else
-						if (qualpoder == 1){
-							contadoracucar++;
-							pegouacucar = true;
-						} else
-						if (qualpoder == 2) {
-							contadorrefrigerante++;
-							j.vida = j.vida - 25;
-						} else {
-							contadoragua++;
-							j.vida = j.vida + 25;
-						}
-						poderes[i] = null;
-						if (pegoucafe && pegouacucar) {
-							j.vida = j.vida + 50;
-							pegoucafe = false;
-							pegouacucar = false;
-						}
+			desenharRetangulo(0, 0, Utils.getInstance().getWidth(), Utils.getInstance().getHeight(), Color.black);
+			desenharRetangulo(0, 700, Utils.getInstance().getWidth(), 400, Color.darkGray);
+			desenharString("VIDAS: " + j.vida, 50, 50, Color.red, 60);
+			j.draw(getGraphics2D());
+			j.update();
+			invocarInimigo();
+			gerenciarColetaveis();
+		} else {
+			endGame.draw(getGraphics2D());
+		}
+	}
+	
+	public void gerenciarColetaveis() {
+		for (int i = 0; i < coletaveis.length; i++) {
+			if (coletaveis[i] != null) {
+				if (coletaveis[i].foiColetado(j)) {
+					Coletavel c = coletaveis[i];
+					if (c.getClass() == Cafe.class) {
+						contadorCafe++;
+						pegoucafe = true;
 					} else
-					if (poderes[i].saiu) {
-						poderes[i] = null;
+					if (c.getClass() == Acucar.class){
+						contadorAcucar++;
+						pegouacucar = true;
+					} else
+					if (c.getClass() == Refrigerante.class) {
+						contadorRefrigerante++;
+						j.vida = j.vida - 25;
+					} else {
+						contadorAgua++;
+						j.vida = j.vida + 25;
 					}
+					coletaveis[i] = null;
+					if (pegoucafe && pegouacucar) {
+						j.vida = j.vida + 50;
+						pegoucafe = false;
+						pegouacucar = false;
+					}
+				} else
+				if (coletaveis[i].saiu) {
+					coletaveis[i] = null;
 				}
 			}
-			for (int i = 0; i < poderes.length; i++) {
-				if (poderes[i] != null) {
-					poderes[i].update();
-					poderes[i].draw(getGraphics2D());
+		}
+		for (int i = 0; i < coletaveis.length; i++) {
+			if (coletaveis[i] != null) {
+				coletaveis[i].update();
+				coletaveis[i].draw(getGraphics2D());
+			}
+		}
+	}
+	
+	public void invocarInimigo() {
+		if (contadorinvocar == 15) {
+			contadorinvocar = 0;
+			for (int i = 0; i < coletaveis.length; i++) {
+				if (coletaveis[i] == null) {
+					coletaveis[i] = criarColetavel();
+					break;
 				}
 			}
 		} else {
-			desenharString("Você perdeu", 400, 100, Color.red, 30);
-			desenharString("Quantidade de café coletado: " + contadorcafe, 400, 200, new Color(89, 52, 10), 20);
-			desenharString("Quantidade de açucar coletado: " + contadoracucar, 400, 250, Color.white, 20);
-			desenharString("Quantidade de refrigerante coletado: " + contadorrefrigerante, 400, 300, new Color(201, 126, 42), 20);
-			desenharString("Quantidade de água coletada: " + contadoragua, 400, 350, Color.cyan, 20);
+			contadorinvocar++;
 		}
-		// TODO Auto-generated method stub
-		
+	}
+	
+	public Coletavel criarColetavel() {
+		int sorteado = sorteio.nextInt(4);
+		switch(sorteado) {
+		case 0:
+			return new Cafe();
+		case 1:
+			return new Acucar();
+		case 2:
+			return new Agua();
+		case 3:
+			return new Refrigerante();
+		default:
+			return null;
+		}
 	}
 
 	@Override
 	public void init() {
 		j = new Jogador();
-		poderes = new Poder[200];
+		coletaveis = new Coletavel[200];
 		contadorinvocar = 0;
-		contadorcafe = 0;
-		contadoracucar = 0;
-		contadorrefrigerante = 0;
-		contadoragua = 0;
+		contadorCafe = 0;
+		contadorAcucar = 0;
+		contadorRefrigerante = 0;
+		contadorAgua = 0;
 		pegoucafe = false;
 		pegouacucar = false;
-		// TODO Auto-generated method stub
-		
+		sorteio = new Random();
+		endGame = new Tela();
+		requestFocus();
 	}
 	
 	public class Teclado extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
 			if (e.getKeyCode() == e.VK_A) {
 				j.movendo = -1;
 			} else if (e.getKeyCode() == e.VK_D) {
@@ -130,7 +149,6 @@ public class Roda extends Game{
 		
 		@Override
 		public void keyReleased(KeyEvent e) {
-			
 			if (e.getKeyCode() == e.VK_A) {
 				j.movendo = 0;
 			} else if (e.getKeyCode() == e.VK_D) {
@@ -138,6 +156,4 @@ public class Roda extends Game{
 			}
 		}
 	}
-	
-	
 }

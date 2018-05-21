@@ -7,37 +7,31 @@ import br.senai.sc.engine.Utils;
 
 public class Jogador extends ObjetoGrafico{
 	
-	double vida;
-	int movendo;
+	protected double vida;
+	protected int movendo;
 
 	public Jogador() {
 		super(0, 0, 10, 0, 50, 50);
-		voltapromeio();
+		voltaProMeio();
 		vida = 100;
 	}
 
-	private void voltapromeio() {
-		// TODO Auto-generated method stub
-		x = Utils.getInstance().getWidth() / 2;
-		y = 650;
+	private void voltaProMeio() {
+		posX = Utils.getInstance().getWidth() / 2;
+		posY = 650;
 	}
 	
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
 		if (movendo == 1) {
-			if (x + 50 < Utils.getInstance().getWidth()) {
-				
-				x = x + velocidadex;
+			if (posX + 50 < Utils.getInstance().getWidth()) {
+				posX = posX + velocidadeX;
 			}
 		} else if (movendo == -1) {
-			if (x > 0) {
-				
-				x = x - velocidadex;
+			if (posX > 0) {
+				posX = posX - velocidadeX;
 			}
-			
 		}
 		
 		if (vida > 0) {
@@ -47,10 +41,8 @@ public class Jogador extends ObjetoGrafico{
 
 	@Override
 	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-		
-		g.setColor(Color.green);
-		g.fillRect(x, y, largura, altura);
+		g.setColor(Color.GREEN);
+		g.fillRect(posX, posY, largura, altura);
 	}
 
 	public double getVida() {
@@ -60,8 +52,6 @@ public class Jogador extends ObjetoGrafico{
 	public void setVida(double vida) {
 		this.vida = vida;
 	}
-
-	
 	
 	public int getMovendo() {
 		return movendo;
@@ -70,6 +60,4 @@ public class Jogador extends ObjetoGrafico{
 	public void setMovendo(int movendo) {
 		this.movendo = movendo;
 	}
-	
-	
 }
